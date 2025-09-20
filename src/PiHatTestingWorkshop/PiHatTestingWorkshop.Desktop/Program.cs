@@ -100,13 +100,13 @@ public static class Program
                 Console.WriteLine("        -startGUI");
                 Console.WriteLine("            Starts the GUI. By default, application runs as a CLI app only. If you have a window manager running, this will allow you to interact with the GUI instead");
                 Console.WriteLine();
-                Console.WriteLine("        -setPinHigh [Pin Number] (Example: -setPinHigh 1)");
+                Console.WriteLine("        -setPinHigh [Pin Number] (Example: -setPinHigh 2)");
                 Console.WriteLine("            Pin number is required. Sets the specified GPIO pin to HIGH (3.3v)");
                 Console.WriteLine();
-                Console.WriteLine("        -setPinLow [Pin Number] (Example: -setPinLow 1)");
+                Console.WriteLine("        -setPinLow [Pin Number] (Example: -setPinLow 2)");
                 Console.WriteLine("            Pin number is required. Sets the specified GPIO pin to LOW (0v)");
                 Console.WriteLine();
-                Console.WriteLine("        -readPin [Pin Number] (Example: -readPin 1)");
+                Console.WriteLine("        -readPin [Pin Number] (Example: -readPin 2)");
                 Console.WriteLine("            Pin number is required. Reads the specified GPIO pin several hundred times in a row");
                 Console.WriteLine();
                 Console.WriteLine("        -readAdDaHat");
