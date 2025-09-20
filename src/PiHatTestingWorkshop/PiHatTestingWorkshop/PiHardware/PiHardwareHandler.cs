@@ -74,10 +74,10 @@ public class PiHardwareHandler
         _gpio.Write(_chipSelectPin, PinValue.High);
         
         // Configure SPI settings
-        var settings = new SpiConnectionSettings(0)
+        var settings = new SpiConnectionSettings(0, 0)
         {
             ClockFrequency = 20000,
-            Mode = SpiMode.Mode1,  
+            Mode = SpiMode.Mode0,  
             ChipSelectLineActiveState = 1,
             DataBitLength = 8
         };
