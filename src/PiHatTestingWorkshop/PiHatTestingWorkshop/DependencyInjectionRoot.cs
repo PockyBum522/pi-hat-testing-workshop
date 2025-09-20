@@ -1,4 +1,5 @@
 using Autofac;
+using PiHatTestingWorkshop.PiHardware;
 using PiHatTestingWorkshop.ViewModels;
 using PiHatTestingWorkshop.Views;
 
@@ -35,6 +36,8 @@ public class DependencyInjectionRoot
                 return true;
             });
         };
+        
+        DependencyContainerBuilder.RegisterType<PiHardwareHandler>().AsSelf().SingleInstance();
         
         // Setup UI (Views and ViewModels) 
         DependencyContainerBuilder.RegisterType<MainViewModel>().AsSelf().SingleInstance();
