@@ -49,14 +49,17 @@
             </Grid.ColumnDefinitions>
 
             <DockPanel>
+                
                 <TextBlock Text="Current Pin:" DockPanel.Dock="Top" Margin="5,0,0,5"/>
                 
                 <TextBox DockPanel.Dock="Left"
                          Text="{Binding PinToWorkText}"
                          Margin="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                
             </DockPanel>
             
             <DockPanel Grid.Row="0" Grid.Column="1" >
+                
                 <Button DockPanel.Dock="Left"
                         Content="Set Pin High" 
                         Margin="5"
@@ -68,6 +71,23 @@
                         Margin="5"
                         HorizontalAlignment="Stretch" 
                         Command="{Binding SetPinLowCommand}" />
+                
+            </DockPanel>
+            
+            <DockPanel Grid.Row="1" Grid.Column="1" >
+                
+                <Button DockPanel.Dock="Left"
+                        Content="Repeatedly Read Pin" 
+                        Margin="5"
+                        HorizontalAlignment="Stretch" 
+                        Command="{Binding ReadPinValuesRepeatedlyCommand}" />
+                
+                <!-- <Button DockPanel.Dock="Right" -->
+                <!--         Content="Set Pin Low"  -->
+                <!--         Margin="5" -->
+                <!--         HorizontalAlignment="Stretch"  -->
+                <!--         Command="{Binding SetPinLowCommand}" /> -->
+                
             </DockPanel>
             
         </Grid>
