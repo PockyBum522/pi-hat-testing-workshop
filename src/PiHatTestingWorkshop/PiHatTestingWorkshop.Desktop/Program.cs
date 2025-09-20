@@ -36,7 +36,7 @@ public static class Program
                 runAsGuiArgumentFound = true;
         }
 
-        if (runAsGuiArgumentFound)
+        if (!runAsGuiArgumentFound)
         {
             await runApplicationAsCliOnly();
         }
