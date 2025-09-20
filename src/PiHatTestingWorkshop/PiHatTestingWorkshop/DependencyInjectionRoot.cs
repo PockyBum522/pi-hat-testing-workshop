@@ -36,16 +36,6 @@ public class DependencyInjectionRoot
             });
         };
         
-        // Check arguments because we don't need to build the UI if we're running as -no-gui
-        var argsCounter = 0;
-        
-        foreach (var argument in Environment.GetCommandLineArgs())
-        {
-            Console.WriteLine($"[CLI Argument {argsCounter}] = '{argument}' (Without single quotes)");
-            
-            argsCounter++;
-        }
-        
         // Setup UI (Views and ViewModels) 
         DependencyContainerBuilder.RegisterType<MainViewModel>().AsSelf().SingleInstance();
         DependencyContainerBuilder.RegisterType<MainView>().AsSelf().SingleInstance();

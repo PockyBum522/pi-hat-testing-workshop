@@ -15,6 +15,17 @@ public static class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        // Check arguments because we don't need to build the UI if we're running as -no-gui
+        var argsCounter = 0;
+        
+        foreach (var argument in Environment.GetCommandLineArgs())
+        {
+            Console.WriteLine($"[CLI Argument {argsCounter}] = '{argument}' (Without single quotes)");
+            
+            argsCounter++;
+        }
+
+        
         try
         {
             BuildAvaloniaApp()
