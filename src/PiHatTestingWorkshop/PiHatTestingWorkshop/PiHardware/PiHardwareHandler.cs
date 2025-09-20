@@ -63,8 +63,8 @@ public class PiHardwareHandler
         _gpio ??= new GpioController();
         
         // GPIO pins for various control lines
-        const int chipSelectPin = 8;     // Chip Select (CE0)
-        const int resetPin = 22;   // Reset
+        const int chipSelectPin = 22;     // Chip Select (CE0)
+        const int resetPin = 18;   // Reset
 
         _gpio.OpenPin(resetPin, PinMode.Output);
         _gpio.OpenPin(chipSelectPin, PinMode.Output);
