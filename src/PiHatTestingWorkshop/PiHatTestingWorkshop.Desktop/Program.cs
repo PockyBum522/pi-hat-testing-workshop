@@ -40,29 +40,33 @@ public static class Program
         // Handle CLI/GUI application modes
         if (runAsGuiArgumentFound)
         {
-            try
-            {
-                BuildAvaloniaApp()
-                    .StartWithClassicDesktopLifetime(args);
-            }
-            catch (Exception ex)
-            {
-                DependencyInjectionRoot.LoggerApplication.Warning(ex, "An error occurred while starting the application");
-            }
-            finally
-            {
-                var counter = 20;
-        
-                while (counter-- > 0)
-                {
-                    Log.CloseAndFlush();
-                
-                    Thread.Sleep(100);
-                }
-            }
+            Console.WriteLine("Application starting. Running as GUI version of the app");
+            
+            // try
+            // {
+            //     BuildAvaloniaApp()
+            //         .StartWithClassicDesktopLifetime(args);
+            // }
+            // catch (Exception ex)
+            // {
+            //     DependencyInjectionRoot.LoggerApplication.Warning(ex, "An error occurred while starting the application");
+            // }
+            // finally
+            // {
+            //     var counter = 20;
+            //
+            //     while (counter-- > 0)
+            //     {
+            //         Log.CloseAndFlush();
+            //     
+            //         Thread.Sleep(100);
+            //     }
+            // }
         }
         else
         {
+            Console.WriteLine("Application starting. Running as CLI-only version of the app");
+            
             await runApplicationAsCliOnly();
         }
     }
@@ -77,8 +81,6 @@ public static class Program
         
         if (logger is null) throw new NullReferenceException("_logger was null in App.axaml.cs");
         
-        logger.Information("Application started. User has chosen CLI only");
-
         var piHardwareHandler = scope.Resolve<PiHardwareHandler>();
         
         // NOTE: If you add arguments below, add a corresponding way to run that test in MainViewModel.cs
