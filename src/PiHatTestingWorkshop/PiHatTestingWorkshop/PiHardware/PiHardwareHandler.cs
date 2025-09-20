@@ -123,7 +123,7 @@ public class PiHardwareHandler
     {
         // Command to read the device ID from the STATUS register
         Span<byte> writeBuffer = [0x10, 0x00];      // RREG command, STATUS register, 1 byte to read
-        Span<byte> readBuffer = stackalloc byte[1];
+        Span<byte> readBuffer = stackalloc byte[2];
 
         // Send command and receive response
         ads1256.TransferFullDuplex(writeBuffer, readBuffer);
