@@ -154,6 +154,8 @@ public class PiHardwareHandler
         resetAds1256();
 
         //     id = self.ADS1256_ReadChipID()
+        getAds1256DeviceId(ads1256);
+
         //     if id == 3 :
         //         print("ID Read success  ")
         //     else:
@@ -192,9 +194,23 @@ public class PiHardwareHandler
         return pinInt;
     }
     
-    private static int getSpiDeviceId(SpiDevice ads1256)
+    private void getAds1256DeviceId(SpiDevice ads1256)
     {
-        // // Command to read the device ID from the STATUS register
+        // def ADS1256_ReadChipID(self):
+        //     self.ADS1256_WaitDRDY()
+        waitForDataReadyAds1256();
+        
+        //     id = self.ADS1256_Read_data(REG_E['REG_STATUS'])
+        var returnedData = readDataAds1256(ads1256, 0); // 0 is REG_E 'REG_STATUS"
+
+        Console.WriteLine($"Device ID returned: {returnedData}");
+        
+        //     id = id[0] >> 4
+        //     # print 'ID',id
+        //     
+        //     return id
+        
+        // Command to read the device ID from the STATUS register
         // Span<byte> writeBuffer = [0x10, 0x01];      // RREG command, STATUS register, 1 byte to read
         // Span<byte> readBuffer = stackalloc byte[2];
         //
@@ -203,10 +219,59 @@ public class PiHardwareHandler
         //
         // var deviceId = readBuffer[0];
         // return (int)deviceId;
-        
-        throw new NotImplementedException();
     }
-    
+
+    private int readDataAds1256(SpiDevice ads1256, int reg)
+    {
+        if (_gpio is null) throw new NullReferenceException("_gpio is null");
+        
+        // def ADS1256_Read_data(self, reg):
+        //     config.digital_write(self.cs_pin, GPIO.LOW)#cs  0
+        _gpio.Write(_chipSelectPin, PinValue.Low);
+
+        var rReg = 0x10;
+        
+        //     config.spi_writebyte([CMD['CMD_RREG'] | reg, 0x00])
+        
+        Span<byte> writeBuffer = [0x10, 0x00];      // RREG command, STATUS register, 1 byte to read
+        ads1256.Write(writeBuffer);
+        
+        //     data = config.spi_readbytes(1)
+        Span<byte> readBuffer = stackalloc byte[1];
+        ads1256.Read(readBuffer);
+        
+        //     config.digital_write(self.cs_pin, GPIO.HIGH)#cs 1
+        _gpio.Write(_chipSelectPin, PinValue.High);
+
+        return readBuffer[0];
+    }
+
+    private void waitForDataReadyAds1256()
+    {
+        if (_gpio is null) throw new NullReferenceException("_gpio is null");
+        
+        for (var i = 0; i < 400000; i++)
+        {
+            if (_gpio.Read(_dataReadyPin) == 0)
+            {
+                break;
+            }
+
+            if (i >= 399999)
+            {
+                Console.WriteLine("Timed out waiting for data ready pin");
+            }
+        }
+        
+        // def ADS1256_WaitDRDY(self):
+        //     for i in range(0,400000,1):
+        //     if(config.digital_read(self.drdy_pin) == 0):
+        //             
+        //     break
+        //     if(i >= 400000):
+        //     print ("Time Out ...\r\n")
+    }
+
     private int readAdcSingleChannel(byte channel, SpiDevice ads1256)
     {
         // _gpio ??= new GpioController();
