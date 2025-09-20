@@ -94,7 +94,7 @@ public class PiHardwareHandler
         // // Send a command and read device ID
         // var adcDeviceId = getSpiDeviceId(ads1256);
         
-        Console.WriteLine($"Starting ADS1256 reads on device ID={adcDeviceId} :");
+        // Console.WriteLine($"Starting ADS1256 reads on device ID={adcDeviceId} :");
         
         // var countdown = 500;
         //
@@ -154,7 +154,7 @@ public class PiHardwareHandler
         resetAds1256();
 
         //     id = self.ADS1256_ReadChipID()
-        getAds1256DeviceId(ads1256);
+        printAds1256DeviceId(ads1256);
 
         //     if id == 3 :
         //         print("ID Read success  ")
@@ -194,7 +194,7 @@ public class PiHardwareHandler
         return pinInt;
     }
     
-    private void getAds1256DeviceId(SpiDevice ads1256)
+    private void printAds1256DeviceId(SpiDevice ads1256)
     {
         // def ADS1256_ReadChipID(self):
         //     self.ADS1256_WaitDRDY()
