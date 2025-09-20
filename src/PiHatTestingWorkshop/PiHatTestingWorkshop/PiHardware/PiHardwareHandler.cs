@@ -72,6 +72,9 @@ public class PiHardwareHandler
         initAds1256();
         
         
+        var waveshareAdcDeviceId = getAds1256DeviceId();
+        
+        Console.WriteLine($"ADS1256 Device ID from board is: {waveshareAdcDeviceId}");
         
         // _gpio.OpenPin(_resetPin, PinMode.Output);
         // _gpio.OpenPin(_chipSelectPin, PinMode.Output);
@@ -91,26 +94,23 @@ public class PiHardwareHandler
         //
         // // Create SPI device
         // var ads1256 = SpiDevice.Create(settings);
-        //
-        // // Send a command and read device ID
-        // var adcDeviceId = getSpiDeviceId(ads1256);
         
         // Console.WriteLine($"Starting ADS1256 reads on device ID={adcDeviceId} :");
         
-        // var countdown = 500;
-        //
-        // while (countdown-- > 0)
-        // {
-        //     var pin00AnalogValue = readAdcSingleChannel(0, ads1256);
-        //     var pin01AnalogValue = readAdcSingleChannel(1, ads1256);
-        //     var pin02AnalogValue = readAdcSingleChannel(2, ads1256);
-        //     var pin03AnalogValue = readAdcSingleChannel(3, ads1256);
-        //     
-        //     Console.WriteLine($"DeviceID: {adcDeviceId} | [ADC 0] is currently {pin00AnalogValue} | " + 
-        //                       $"[ADC 1] is currently {pin01AnalogValue} | " + 
-        //                       $"[ADC 2] is currently {pin02AnalogValue} | " +
-        //                       $"[ADC 3] is currently {pin03AnalogValue}");
-        // }
+        var countdown = 500;
+        
+        while (countdown-- > 0)
+        {
+            var pin00AnalogValue = readAdcSingleChannel(0);
+            var pin01AnalogValue = readAdcSingleChannel(1);
+            var pin02AnalogValue = readAdcSingleChannel(2);
+            var pin03AnalogValue = readAdcSingleChannel(3);
+            
+            Console.WriteLine($"DeviceID: {waveshareAdcDeviceId} | [ADC 0] is currently {pin00AnalogValue} | " + 
+                              $"[ADC 1] is currently {pin01AnalogValue} | " + 
+                              $"[ADC 2] is currently {pin02AnalogValue} | " +
+                              $"[ADC 3] is currently {pin03AnalogValue}");
+        }
         
         Console.WriteLine($"Finished looping Waveshare AD/DA HAT read");
     }
@@ -154,18 +154,20 @@ public class PiHardwareHandler
         //     self.ADS1256_reset()
         resetAds1256();
 
-        //     id = self.ADS1256_ReadChipID()
-        var waveshareAdcDeviceId = getAds1256DeviceId();
-
-        Console.WriteLine($"ADS1256 Device ID from board is: {waveshareAdcDeviceId}");
-
-        //     if id == 3 :
-        //         print("ID Read success  ")
-        //     else:
-        //         print("ID Read failed   ")
-        //         return -1
-        //     self.ADS1256_ConfigADC(ADS1256_GAIN_E['ADS1256_GAIN_1'], ADS1256_DRATE_E['ADS1256_30000SPS'])
-        //     return 0
+        // Moving all of below outside of here now that it works
+        
+        // //     id = self.ADS1256_ReadChipID()
+        // var waveshareAdcDeviceId = getAds1256DeviceId();
+        //
+        // Console.WriteLine($"ADS1256 Device ID from board is: {waveshareAdcDeviceId}");
+        //
+        // //     if id == 3 :
+        // //         print("ID Read success  ")
+        // //     else:
+        // //         print("ID Read failed   ")
+        // //         return -1
+        // //     self.ADS1256_ConfigADC(ADS1256_GAIN_E['ADS1256_GAIN_1'], ADS1256_DRATE_E['ADS1256_30000SPS'])
+        // //     return 0
     }
 
     private void resetAds1256()
@@ -273,7 +275,7 @@ public class PiHardwareHandler
         //     print ("Time Out ...\r\n")
     }
 
-    private int readAdcSingleChannel(byte channel)
+    private double readAdcSingleChannel(byte channel)
     {
         _gpio ??= new GpioController();
 
@@ -296,7 +298,7 @@ public class PiHardwareHandler
         // Value = self.ADS1256_Read_ADC_Data()
         var channelValue = readAdcDataAds1256();
         
-        Console.WriteLine($"Adc Channel Value: {channelValue}");
+        return channelValue;
         
         
         // _gpio.OpenPin(_dataReadyPin, PinMode.Output);
