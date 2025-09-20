@@ -159,7 +159,7 @@ public class PiHardwareHandler
         while (_gpio.Read(dataReadyPin) == PinValue.High) { }
 
         // 6. Send the RDATA command
-        Span<byte> writeBuffer = stackalloc byte[] { 0x10 };
+        Span<byte> writeBuffer = stackalloc byte[3] { 0x10, 0x0, 0x0 };
         Span<byte> readBuffer = stackalloc byte[3]; // Read 3 bytes for 24-bit data
         ads1256.TransferFullDuplex(writeBuffer, readBuffer);
 
