@@ -9,7 +9,7 @@ public static class ApplicationPaths
         if (Environment.UserName == "david")
         {
             // Hardcoding my path here
-            basePath = "/media/secondary/repos/linux-files/configuration/dotfiles/";
+            basePath = "/media/secondary/repos/pi-hat-testing-workshop/configuration/dotfiles/";
         }
         else
         {
@@ -35,7 +35,7 @@ public static class ApplicationPaths
             
         ApplicationLoggingDirectory = Path.Join(logBasePath, "Logs");
         
-        UserSettingsDirectory = Path.Join(basePath, "morse-practice");
+        UserSettingsDirectory = Path.Join(basePath, "pi-hat-testing-workshop");
     }
     
     public static string ApplicationLoggingDirectory { get; private set; }

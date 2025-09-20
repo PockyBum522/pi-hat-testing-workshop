@@ -8,7 +8,7 @@ namespace PiHatTestingWorkshop;
 
 public class App : Application
 {
-    private static readonly string _userPreferencesFileName = $".{Environment.MachineName}-morse-practice.json";
+    private static readonly string _userPreferencesFileName = $".{Environment.MachineName}-pi-hat-testing-workshop.json";
     
     public static readonly string UserPreferencesFullPath = Path.Combine(ApplicationPaths.UserSettingsDirectory, _userPreferencesFileName);
     
