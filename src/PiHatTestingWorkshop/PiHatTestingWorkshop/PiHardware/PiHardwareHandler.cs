@@ -138,6 +138,8 @@ public class PiHardwareHandler
         
         const int dataReadyPin = 17;
         
+        _gpio.OpenPin(dataReadyPin, PinMode.Output);
+        
         // 1. Send the RDATAC command to exit continuous mode (if active)
         ads1256.Write(new byte[] { 0x01 });
 
