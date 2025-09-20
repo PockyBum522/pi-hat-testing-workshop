@@ -45,7 +45,7 @@ public static class Program
             // If we weren't explicitly told to run the gui then don't
             return;
         }
-            
+        
         try
         {
             BuildAvaloniaApp()
@@ -82,7 +82,60 @@ public static class Program
 
         var piHardwareHandler = scope.Resolve<PiHardwareHandler>();
         
-        // TODO: Handle arguments and actually running corresponding piHardwareHandler methods
+        // NOTE: If you add arguments below, add a corresponding way to run that test in MainViewModel.cs
+        
+        for (var i = 0; i < Environment.GetCommandLineArgs().Length; i++)
+        {
+            var argument = Environment.GetCommandLineArgs()[i];
+
+            if (argument.Contains("-help", StringComparison.CurrentCultureIgnoreCase) ||
+                argument.Contains("-?", StringComparison.CurrentCultureIgnoreCase) ||
+                argument.Equals("-h", StringComparison.CurrentCultureIgnoreCase))
+            {
+                Console.WriteLine();
+                Console.WriteLine("Raspberry Pi HAT Testing Workshop:");
+                Console.WriteLine();
+                Console.WriteLine("    Options:");
+                Console.WriteLine("        -setPinHigh [Pin Number] (Example: -setPinHigh 1)");
+                Console.WriteLine("            Pin number is required. Sets the specified GPIO pin to HIGH (3.3v)");
+                Console.WriteLine();
+                Console.WriteLine("        -setPinLow [Pin Number] (Example: -setPinLow 1)");
+                Console.WriteLine("            Pin number is required. Sets the specified GPIO pin to LOW (0v)");
+                Console.WriteLine();
+                Console.WriteLine("        -readPin [Pin Number] (Example: -readPin 1)");
+                Console.WriteLine("            Pin number is required. Reads the specified GPIO pin several hundred times in a row");
+                Console.WriteLine();
+                Console.WriteLine("        -readAdDaHat");
+                Console.WriteLine("            Reads the first three channels on a Waveshare High-Precision AD/DA HAT several hundred times in a row");
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+            
+            if (argument.ToLower().Contains("-setpinhigh"))
+            {
+                // Call pihardware set pin here and convert next arg to int
+                throw new NotImplementedException();
+            }
+            
+            if (argument.ToLower().Contains("-setpinlow"))
+            {
+                // Call pihardware set pin here and convert next arg to int
+                throw new NotImplementedException();
+            }
+            
+            if (argument.ToLower().Contains("-readpin"))
+            {
+                // Call pihardware read pin here and convert next arg to int
+                throw new NotImplementedException();
+            }
+            
+            if (argument.ToLower().Contains("-readaddahat"))
+            {
+                piHardwareHandler.ReadWaveshareAdDaHatRepeatedly();
+            }
+        }
+        
+        // NOTE: If you add arguments above, add a corresponding way to run that test in MainViewModel.cs
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
