@@ -76,9 +76,9 @@ public class PiHardwareHandler
         // Configure SPI settings
         var settings = new SpiConnectionSettings(0)
         {
-            ClockFrequency = 4800,
+            ClockFrequency = 20000,
             Mode = SpiMode.Mode1,  
-            ChipSelectLineActiveState = 0,
+            ChipSelectLineActiveState = 1,
             DataBitLength = 8
         };
 
