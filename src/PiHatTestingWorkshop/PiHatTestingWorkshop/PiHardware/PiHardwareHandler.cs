@@ -66,26 +66,7 @@ public class PiHardwareHandler
 
         var adcHatHandler = new WaveshareAdcHatHandler(_gpio);
 
-        adcHatHandler.InitAds1256();
-        
-        var waveshareAdcDeviceId = adcHatHandler.GetAds1256DeviceId();
-        
-        Console.WriteLine($"ADS1256 Device ID from board is: {waveshareAdcDeviceId}");
-        
-        var countdown = 5000;
-        
-        while (countdown-- > 0)
-        {
-            var pin00AnalogValue = adcHatHandler.ReadAdcSingleChannel(0);
-            var pin01AnalogValue = adcHatHandler.ReadAdcSingleChannel(1);
-            var pin02AnalogValue = adcHatHandler.ReadAdcSingleChannel(2);
-            var pin03AnalogValue = adcHatHandler.ReadAdcSingleChannel(3);
-            
-            Console.WriteLine($"DeviceID: {waveshareAdcDeviceId} | [ADC 0] is currently {pin00AnalogValue} | " + 
-                              $"[ADC 1] is currently {pin01AnalogValue} | " + 
-                              $"[ADC 2] is currently {pin02AnalogValue} | " +
-                              $"[ADC 3] is currently {pin03AnalogValue}");
-        }
+        adcHatHandler.ReadWaveshareAdDaHatRepeatedly();
         
         Console.WriteLine($"Finished looping Waveshare AD/DA HAT read");
     }

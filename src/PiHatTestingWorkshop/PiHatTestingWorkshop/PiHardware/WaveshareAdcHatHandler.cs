@@ -12,7 +12,31 @@ public class WaveshareAdcHatHandler(GpioController gpio)
     
     private SpiDevice? _ads1256;
 
-    public void InitAds1256()
+    public void ReadWaveshareAdDaHatRepeatedly()
+    {
+        InitAds1256();
+        
+        var waveshareAdcDeviceId = GetAds1256DeviceId();
+        
+        Console.WriteLine($"ADS1256 Device ID from board is: {waveshareAdcDeviceId}");
+        
+        var countdown = 500;
+        
+        while (countdown-- > 0)
+        {
+            var pin00AnalogValue = ReadAdcSingleChannel(0);
+            var pin01AnalogValue = ReadAdcSingleChannel(1);
+            var pin02AnalogValue = ReadAdcSingleChannel(2);
+            var pin03AnalogValue = ReadAdcSingleChannel(3);
+            
+            Console.WriteLine($"DeviceID: {waveshareAdcDeviceId} | [ADC 0] is currently {pin00AnalogValue} | " + 
+                              $"[ADC 1] is currently {pin01AnalogValue} | " + 
+                              $"[ADC 2] is currently {pin02AnalogValue} | " +
+                              $"[ADC 3] is currently {pin03AnalogValue}");
+        }
+    }
+
+    private void InitAds1256()
     { 
         if (gpio is null) throw new NullReferenceException("gpio is null");
         
@@ -43,8 +67,8 @@ public class WaveshareAdcHatHandler(GpioController gpio)
         Thread.Sleep(200);
         gpio.Write(_resetPin, PinValue.High);
     }
-    
-    public int GetAds1256DeviceId()
+
+    private int GetAds1256DeviceId()
     {
         waitForDataReadyAds1256();
         
@@ -89,7 +113,7 @@ public class WaveshareAdcHatHandler(GpioController gpio)
         }
     }
 
-    public double ReadAdcSingleChannel(byte channel)
+    private double ReadAdcSingleChannel(byte channel)
     {
         setChannelAds1256(channel);
 
