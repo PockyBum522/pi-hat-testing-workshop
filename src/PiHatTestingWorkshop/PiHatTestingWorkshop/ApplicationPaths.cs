@@ -17,6 +17,16 @@ public static class ApplicationPaths
             basePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         }
         
+        // Make sure it uh, exists
+        if (!Directory.Exists(basePath))
+        {
+            Console.WriteLine("Could not find path: " + basePath);
+            
+            basePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            
+            Console.WriteLine($"Using: '{basePath}' instead");
+        }
+        
         setAllPaths(basePath);
         
         if (string.IsNullOrWhiteSpace(ApplicationLoggingDirectory) ||
