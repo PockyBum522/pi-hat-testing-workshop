@@ -11,7 +11,7 @@ public class PiHardwareHandler
     private const int _resetPin = 18;            // 18 by other numbering
     
     private GpioController? _gpio;
-    private SpiDevice _ads1256;
+    private SpiDevice? _ads1256;
 
     public void SetPiGpioPin(int pinToWork, bool newPinState)
     {
@@ -155,7 +155,7 @@ public class PiHardwareHandler
         resetAds1256();
 
         //     id = self.ADS1256_ReadChipID()
-        var waveshareAdcDeviceId = getAds1256DeviceId(_ads1256);
+        var waveshareAdcDeviceId = getAds1256DeviceId();
 
         Console.WriteLine($"ADS1256 Device ID from board is: {waveshareAdcDeviceId}");
 
@@ -197,14 +197,14 @@ public class PiHardwareHandler
         return pinInt;
     }
     
-    private int getAds1256DeviceId(SpiDevice ads1256)
+    private int getAds1256DeviceId()
     {
         // def ADS1256_ReadChipID(self):
         //     self.ADS1256_WaitDRDY()
         waitForDataReadyAds1256();
         
         //     id = self.ADS1256_Read_data(REG_E['REG_STATUS'])
-        var returnedData = readDataAds1256(ads1256, 0); // 0 is REG_E 'REG_STATUS"
+        var returnedData = readDataAds1256(0); // 0 is REG_E 'REG_STATUS"
 
         //     id = id[0] >> 4
         //     # print 'ID',id
@@ -225,13 +225,12 @@ public class PiHardwareHandler
 
     private int readDataAds1256(int reg)
     {
-        if (_gpio is null) throw new NullReferenceException("_gpio is null");
+        if (_gpio is null ||
+            _ads1256 is null) throw new NullReferenceException();
         
         // def ADS1256_Read_data(self, reg):
         //     config.digital_write(self.cs_pin, GPIO.LOW)#cs  0
         _gpio.Write(_chipSelectPin, PinValue.Low);
-
-        var rReg = 0x10;
         
         //     config.spi_writebyte([CMD['CMD_RREG'] | reg, 0x00])
         
@@ -340,7 +339,9 @@ public class PiHardwareHandler
 
     private double readAdcDataAds1256()
     {
-        if (_gpio is null) throw new NullReferenceException("_gpio is null");
+        
+        if (_gpio is null ||
+            _ads1256 is null) throw new NullReferenceException();
         
         // def ADS1256_Read_ADC_Data(self):
         //     self.ADS1256_WaitDRDY()
@@ -381,7 +382,9 @@ public class PiHardwareHandler
 
     private void writeCommandAds1256(byte reg)
     {
-        if (_gpio is null) throw new NullReferenceException("_gpio is null");
+        
+        if (_gpio is null ||
+            _ads1256 is null) throw new NullReferenceException();
         
         // config.digital_write(self.cs_pin, GPIO.LOW)#cs  0
         _gpio.Write(_chipSelectPin, PinValue.Low);
@@ -407,7 +410,9 @@ public class PiHardwareHandler
     {        
         // This whole thing may need to be rewritten  
         
-        if (_gpio is null) throw new NullReferenceException("_gpio is null");
+        
+        if (_gpio is null ||
+            _ads1256 is null) throw new NullReferenceException();
         
         // def ADS1256_WriteReg(self, reg, data):
         //     config.digital_write(self.cs_pin, GPIO.LOW)#cs  0
