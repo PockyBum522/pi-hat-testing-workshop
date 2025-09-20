@@ -20,7 +20,7 @@ public class DependencyInjectionRoot
     
     private static readonly ContainerBuilder DependencyContainerBuilder = new ();
     
-    public static IContainer GetBuiltContainer()
+    public static IContainer GetBuiltContainer(ApplicationUiModeEnum appUiMode)
     {
         DependencyContainerBuilder.RegisterInstance(LoggerApplication).As<ILogger>().SingleInstance();
         
@@ -39,20 +39,27 @@ public class DependencyInjectionRoot
         
         DependencyContainerBuilder.RegisterType<PiHardwareHandler>().AsSelf().SingleInstance();
         
-        // Setup UI (Views and ViewModels) 
-        DependencyContainerBuilder.RegisterType<MainViewModel>().AsSelf().SingleInstance();
-        DependencyContainerBuilder.RegisterType<MainView>().AsSelf().SingleInstance();
+        if (appUiMode == ApplicationUiModeEnum.Gui)
+        {
+            
+            // Setup UI (Views and ViewModels) 
+            DependencyContainerBuilder.RegisterType<MainViewModel>().AsSelf().SingleInstance();
+            DependencyContainerBuilder.RegisterType<MainView>().AsSelf().SingleInstance();
         
-        var mainWindow = new MainWindow();
-        DependencyContainerBuilder.RegisterInstance(mainWindow).AsSelf().SingleInstance();
+            var mainWindow = new MainWindow();
+            DependencyContainerBuilder.RegisterInstance(mainWindow).AsSelf().SingleInstance();
+        }
         
         var container = DependencyContainerBuilder.Build();
 
-        // Assign ViewModels to Views
-        var mainView = container.Resolve<MainView>();
-        var mainViewModel = container.Resolve<MainViewModel>();
+        if (appUiMode == ApplicationUiModeEnum.Gui)
+        {
+            // Assign ViewModels to Views
+            var mainView = container.Resolve<MainView>();
+            var mainViewModel = container.Resolve<MainViewModel>();
 
-        mainView.DataContext = mainViewModel;
+            mainView.DataContext = mainViewModel;
+        }
         
         return container;
     }

@@ -21,7 +21,7 @@ public class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
-        var dependencyContainer = DependencyInjectionRoot.GetBuiltContainer();
+        var dependencyContainer = DependencyInjectionRoot.GetBuiltContainer(ApplicationUiModeEnum.Gui);
         
         await using var scope = dependencyContainer.BeginLifetimeScope();
         

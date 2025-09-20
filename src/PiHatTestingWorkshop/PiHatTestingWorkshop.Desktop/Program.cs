@@ -42,26 +42,26 @@ public static class Program
         {
             Console.WriteLine("Application starting. Running as GUI version of the app");
             
-            // try
-            // {
-            //     BuildAvaloniaApp()
-            //         .StartWithClassicDesktopLifetime(args);
-            // }
-            // catch (Exception ex)
-            // {
-            //     DependencyInjectionRoot.LoggerApplication.Warning(ex, "An error occurred while starting the application");
-            // }
-            // finally
-            // {
-            //     var counter = 20;
-            //
-            //     while (counter-- > 0)
-            //     {
-            //         Log.CloseAndFlush();
-            //     
-            //         Thread.Sleep(100);
-            //     }
-            // }
+            try
+            {
+                BuildAvaloniaApp()
+                    .StartWithClassicDesktopLifetime(args);
+            }
+            catch (Exception ex)
+            {
+                DependencyInjectionRoot.LoggerApplication.Warning(ex, "An error occurred while starting the application");
+            }
+            finally
+            {
+                var counter = 20;
+            
+                while (counter-- > 0)
+                {
+                    Log.CloseAndFlush();
+                
+                    Thread.Sleep(100);
+                }
+            }
         }
         else
         {
@@ -73,7 +73,7 @@ public static class Program
 
     private static async Task runApplicationAsCliOnly()
     {
-        var dependencyContainer = DependencyInjectionRoot.GetBuiltContainer();
+        var dependencyContainer = DependencyInjectionRoot.GetBuiltContainer(ApplicationUiModeEnum.Cli);
         
         await using var scope = dependencyContainer.BeginLifetimeScope();
         
