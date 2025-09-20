@@ -6,9 +6,10 @@ namespace PiHatTestingWorkshop.PiHardware;
 
 public class PiHardwareHandler
 {
-    private const int _dataReadyPin = 0;        // 17 by other numbering
-    private const int _chipSelectPin = 3;       // 22 by other numbering
-    private const int _resetPin = 1;            // 18 by other numbering
+    private const int _dataReadyPin = 17;        // 17 by other numbering
+    private const int _chipSelectPin = 22;       // 22 by other numbering
+    private const int _resetPin = 18;            // 18 by other numbering
+    
     private GpioController? _gpio;
     
     public void SetPiGpioPin(int pinToWork, bool newPinState)
@@ -75,9 +76,10 @@ public class PiHardwareHandler
         // Configure SPI settings
         var settings = new SpiConnectionSettings(0)
         {
-            ClockFrequency = 1000000, // 1 MHz
-            Mode = SpiMode.Mode1,     // CPOL = 0, CPHA = 1
-            DataBitLength = 8,
+            ClockFrequency = 20000,
+            Mode = SpiMode.Mode1,  
+            ChipSelectLineActiveState = 1,
+            DataBitLength = 8
         };
 
         // Create SPI device
