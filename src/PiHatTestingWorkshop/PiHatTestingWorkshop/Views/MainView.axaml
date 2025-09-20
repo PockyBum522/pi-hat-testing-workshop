@@ -82,6 +82,17 @@
                         HorizontalAlignment="Stretch" 
                         Command="{Binding ReadPinValuesRepeatedlyCommand}" />
                 
+            </DockPanel>
+            
+            
+            <DockPanel Grid.Row="3" Grid.Column="0" >
+                
+                <Button DockPanel.Dock="Left"
+                        Content="Repeatedly Read Waveshare AD/DA HAT" 
+                        Margin="5"
+                        HorizontalAlignment="Stretch" 
+                        Command="{Binding ReadWaveshareAdDaHatRepeatedlyCommand}" />
+                
                 <!-- <Button DockPanel.Dock="Right" -->
                 <!--         Content="Set Pin Low"  -->
                 <!--         Margin="5" -->
