@@ -6,6 +6,9 @@ namespace PiHatTestingWorkshop.PiHardware;
 
 public class PiHardwareHandler
 {
+    private const int _dataReadyPin = 0;        // 17 by other numbering
+    private const int _chipSelectPin = 3;       // 22 by other numbering
+    private const int _resetPin = 1;            // 18 by other numbering
     private GpioController? _gpio;
     
     public void SetPiGpioPin(int pinToWork, bool newPinState)
@@ -62,16 +65,12 @@ public class PiHardwareHandler
     {
         _gpio ??= new GpioController();
         
-        // GPIO pins for various control lines
-        const int chipSelectPin = 22;     // Chip Select (CE0)
-        const int resetPin = 18;   // Reset
-
-        _gpio.OpenPin(resetPin, PinMode.Output);
-        _gpio.OpenPin(chipSelectPin, PinMode.Output);
+        _gpio.OpenPin(_resetPin, PinMode.Output);
+        _gpio.OpenPin(_chipSelectPin, PinMode.Output);
         
         // Configure the ADS1256 control pins
-        _gpio.Write(resetPin, PinValue.High);
-        _gpio.Write(chipSelectPin, PinValue.High);
+        _gpio.Write(_resetPin, PinValue.High);
+        _gpio.Write(_chipSelectPin, PinValue.High);
         
         // Configure SPI settings
         var settings = new SpiConnectionSettings(0)
@@ -134,10 +133,8 @@ public class PiHardwareHandler
     private int readAdcSingleChannel(byte channel, SpiDevice ads1256)
     {
         _gpio ??= new GpioController();
-        
-        const int dataReadyPin = 17;
-        
-        _gpio.OpenPin(dataReadyPin, PinMode.Output);
+
+        _gpio.OpenPin(_dataReadyPin, PinMode.Output);
         
         // 1. Send the RDATAC command to exit continuous mode (if active)
         ads1256.Write(new byte[] { 0x01 });
@@ -155,7 +152,7 @@ public class PiHardwareHandler
         Thread.Sleep(10); // Settle time
 
         // 5. Wait for DRDY pin to go low (indicating data is ready)
-        while (_gpio.Read(dataReadyPin) == PinValue.High) { }
+        while (_gpio.Read(_dataReadyPin) == PinValue.High) { }
 
         // 6. Send the RDATA command
         Span<byte> writeBuffer = stackalloc byte[3] { 0x10, 0x0, 0x0 };
