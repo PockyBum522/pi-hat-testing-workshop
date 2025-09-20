@@ -72,7 +72,7 @@ public class PiHardwareHandler
         
         Console.WriteLine($"ADS1256 Device ID from board is: {waveshareAdcDeviceId}");
         
-        var countdown = 500;
+        var countdown = 5000;
         
         while (countdown-- > 0)
         {
