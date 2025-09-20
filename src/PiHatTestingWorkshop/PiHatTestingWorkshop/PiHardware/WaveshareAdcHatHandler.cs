@@ -72,12 +72,12 @@ public class WaveshareAdcHatHandler(GpioController gpio)
     {
         waitForDataReadyAds1256();
         
-        var returnedData = readDataAds1256(0);
+        var returnedData = readDataAds1256();
 
         return returnedData >> 4;
     }
 
-    private int readDataAds1256(int reg)
+    private int readDataAds1256()
     {
         if (gpio is null ||
             _ads1256 is null) throw new NullReferenceException();
@@ -157,7 +157,6 @@ public class WaveshareAdcHatHandler(GpioController gpio)
 
     private void writeCommandAds1256(byte reg)
     {
-        
         if (gpio is null ||
             _ads1256 is null) throw new NullReferenceException();
         
