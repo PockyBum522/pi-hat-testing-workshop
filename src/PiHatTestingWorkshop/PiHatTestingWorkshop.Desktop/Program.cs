@@ -24,6 +24,7 @@ public static class Program
         // Check arguments because we don't need to build the UI if we're running as -nogui
         var argsCounter = 0;
 
+        // Check arguments to see if we should start as CLI only or run the GUI
         var runAsGuiArgumentFound = false;
         
         foreach (var argument in Environment.GetCommandLineArgs())
@@ -36,35 +37,33 @@ public static class Program
                 runAsGuiArgumentFound = true;
         }
 
-        if (!runAsGuiArgumentFound)
+        // Handle CLI/GUI application modes
+        if (runAsGuiArgumentFound)
         {
-            await runApplicationAsCliOnly();
+            try
+            {
+                BuildAvaloniaApp()
+                    .StartWithClassicDesktopLifetime(args);
+            }
+            catch (Exception ex)
+            {
+                DependencyInjectionRoot.LoggerApplication.Warning(ex, "An error occurred while starting the application");
+            }
+            finally
+            {
+                var counter = 20;
+        
+                while (counter-- > 0)
+                {
+                    Log.CloseAndFlush();
+                
+                    Thread.Sleep(100);
+                }
+            }
         }
         else
         {
-            // If we weren't explicitly told to run the gui then don't
-            return;
-        }
-        
-        try
-        {
-            BuildAvaloniaApp()
-                .StartWithClassicDesktopLifetime(args);
-        }
-        catch (Exception ex)
-        {
-            DependencyInjectionRoot.LoggerApplication.Warning(ex, "An error occurred while starting the application");
-        }
-        finally
-        {
-            var counter = 20;
-        
-            while (counter-- > 0)
-            {
-                Log.CloseAndFlush();
-                
-                Thread.Sleep(100);
-            }
+            await runApplicationAsCliOnly();
         }
     }
 
@@ -96,6 +95,9 @@ public static class Program
                 Console.WriteLine("Raspberry Pi HAT Testing Workshop:");
                 Console.WriteLine();
                 Console.WriteLine("    Options:");
+                Console.WriteLine("        -startGUI");
+                Console.WriteLine("            Starts the GUI. By default, application runs as a CLI app only. If you have a window manager running, this will allow you to interact with the GUI instead");
+                Console.WriteLine();
                 Console.WriteLine("        -setPinHigh [Pin Number] (Example: -setPinHigh 1)");
                 Console.WriteLine("            Pin number is required. Sets the specified GPIO pin to HIGH (3.3v)");
                 Console.WriteLine();
