@@ -154,7 +154,9 @@ public class PiHardwareHandler
         resetAds1256();
 
         //     id = self.ADS1256_ReadChipID()
-        printAds1256DeviceId(ads1256);
+        var waveshareAdcDeviceId = getAds1256DeviceId(ads1256);
+
+        Console.WriteLine($"ADS1256 Device ID from board is: {waveshareAdcDeviceId}");
 
         //     if id == 3 :
         //         print("ID Read success  ")
@@ -194,7 +196,7 @@ public class PiHardwareHandler
         return pinInt;
     }
     
-    private void printAds1256DeviceId(SpiDevice ads1256)
+    private int getAds1256DeviceId(SpiDevice ads1256)
     {
         // def ADS1256_ReadChipID(self):
         //     self.ADS1256_WaitDRDY()
@@ -203,12 +205,11 @@ public class PiHardwareHandler
         //     id = self.ADS1256_Read_data(REG_E['REG_STATUS'])
         var returnedData = readDataAds1256(ads1256, 0); // 0 is REG_E 'REG_STATUS"
 
-        Console.WriteLine($"Device ID returned: {returnedData}");
-        
         //     id = id[0] >> 4
         //     # print 'ID',id
         //     
         //     return id
+        return returnedData >> 4;
         
         // Command to read the device ID from the STATUS register
         // Span<byte> writeBuffer = [0x10, 0x01];      // RREG command, STATUS register, 1 byte to read
