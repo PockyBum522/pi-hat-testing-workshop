@@ -1,0 +1,74 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:PiHatTestingWorkshop.ViewModels"
+        mc:Ignorable="d" 
+        x:Class="PiHatTestingWorkshop.Views.MainView"
+        x:DataType="viewModels:MainViewModel"
+        Background="Black" >
+        
+        <Design.DataContext>
+            <!-- This only sets the DataContext for the previewer in an IDE, to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+            <viewModels:MainViewModel />
+        </Design.DataContext>
+        
+        <!-- <Interaction.Behaviors> -->
+        <!--     <EventTriggerBehavior EventName="Loaded" > -->
+        <!--         <InvokeCommandAction Command="{Binding whenViewLoadedCommand}" CommandParameter="{Binding #ScottPlot01}" /> -->
+        <!--     </EventTriggerBehavior> -->
+        <!-- </Interaction.Behaviors> -->
+        
+        <UserControl.Styles>
+        
+            <Style Selector="TextBlock">
+                <Setter Property="FontSize" Value="10" />
+                <Setter Property="Foreground" Value="#DDDDDD"/>
+            </Style>
+        
+            <!-- Control defaults -->
+            <Style Selector=":is(Button)">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+        </UserControl.Styles>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="50*"/>
+            </Grid.RowDefinitions>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <DockPanel>
+                <TextBlock Text="Current Pin:" DockPanel.Dock="Top" Margin="5,0,0,5"/>
+                
+                <TextBox DockPanel.Dock="Left"
+                         Text="{Binding PinToWorkText}"
+                         Margin="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            </DockPanel>
+            
+            <DockPanel Grid.Row="0" Grid.Column="1" >
+                <Button DockPanel.Dock="Left"
+                        Content="Set Pin High" 
+                        Margin="5"
+                        HorizontalAlignment="Stretch" 
+                        Command="{Binding SetPinHighCommand}" />
+                
+                <Button DockPanel.Dock="Right"
+                        Content="Set Pin Low" 
+                        Margin="5"
+                        HorizontalAlignment="Stretch" 
+                        Command="{Binding SetPinLowCommand}" />
+            </DockPanel>
+            
+        </Grid>
+</UserControl>
