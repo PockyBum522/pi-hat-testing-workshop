@@ -85,8 +85,7 @@ public class PiHardwareHandler
         var ads1256 = SpiDevice.Create(settings);
 
         // Send a command and read device ID
-        readSpiDeviceId(ads1256);
-        
+        var adcDeviceId = getSpiDeviceId(ads1256);
         
         Console.WriteLine("Starting ADS1256 reads:");
         
@@ -99,7 +98,7 @@ public class PiHardwareHandler
             var pin02AnalogValue = readAdcSingleChannel(2, ads1256);
             var pin03AnalogValue = readAdcSingleChannel(3, ads1256);
             
-            Console.WriteLine($"[ADC 0] is currently {pin00AnalogValue} | " + 
+            Console.WriteLine($"DeviceID: {adcDeviceId} | [ADC 0] is currently {pin00AnalogValue} | " + 
                               $"[ADC 1] is currently {pin01AnalogValue} | " + 
                               $"[ADC 2] is currently {pin02AnalogValue} | " +
                               $"[ADC 3] is currently {pin03AnalogValue}");
@@ -119,7 +118,7 @@ public class PiHardwareHandler
         return pinInt;
     }
     
-    private static void readSpiDeviceId(SpiDevice ads1256)
+    private static int getSpiDeviceId(SpiDevice ads1256)
     {
         // Command to read the device ID from the STATUS register
         Span<byte> writeBuffer = [0x10, 0x00];      // RREG command, STATUS register, 1 byte to read
@@ -129,7 +128,7 @@ public class PiHardwareHandler
         ads1256.TransferFullDuplex(writeBuffer, readBuffer);
 
         var deviceId = readBuffer[0];
-        Console.WriteLine($"ADS1256 Device ID: {deviceId:X2}");
+        return (int)deviceId;
     }
     
     private int readAdcSingleChannel(byte channel, SpiDevice ads1256)
