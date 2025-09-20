@@ -88,9 +88,9 @@ public static class Program
         {
             var argument = Environment.GetCommandLineArgs()[i];
 
-            if (argument.Contains("-help", StringComparison.CurrentCultureIgnoreCase) ||
-                argument.Contains("-?", StringComparison.CurrentCultureIgnoreCase) ||
-                argument.Equals("-h", StringComparison.CurrentCultureIgnoreCase))
+            if (argument.Contains("--help", StringComparison.CurrentCultureIgnoreCase) ||
+                argument.Contains("--?", StringComparison.CurrentCultureIgnoreCase) ||
+                argument.Equals("--h", StringComparison.CurrentCultureIgnoreCase))
             {
                 Console.WriteLine();
                 Console.WriteLine("Raspberry Pi HAT Testing Workshop:");
