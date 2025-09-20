@@ -74,11 +74,11 @@ public class PiHardwareHandler
         _gpio.Write(_chipSelectPin, PinValue.High);
         
         // Configure SPI settings
-        var settings = new SpiConnectionSettings(0)
+        var settings = new SpiConnectionSettings(0, _chipSelectPin)
         {
             ClockFrequency = 20000,
             Mode = SpiMode.Mode1,  
-            ChipSelectLineActiveState = 1,
+            ChipSelectLineActiveState = 0,
             DataBitLength = 8
         };
 
@@ -88,22 +88,22 @@ public class PiHardwareHandler
         // Send a command and read device ID
         var adcDeviceId = getSpiDeviceId(ads1256);
         
-        Console.WriteLine("Starting ADS1256 reads:");
+        Console.WriteLine($"Starting ADS1256 reads on device ID={adcDeviceId} :");
         
-        var countdown = 500;
-        
-        while (countdown-- > 0)
-        {
-            var pin00AnalogValue = readAdcSingleChannel(0, ads1256);
-            var pin01AnalogValue = readAdcSingleChannel(1, ads1256);
-            var pin02AnalogValue = readAdcSingleChannel(2, ads1256);
-            var pin03AnalogValue = readAdcSingleChannel(3, ads1256);
-            
-            Console.WriteLine($"DeviceID: {adcDeviceId} | [ADC 0] is currently {pin00AnalogValue} | " + 
-                              $"[ADC 1] is currently {pin01AnalogValue} | " + 
-                              $"[ADC 2] is currently {pin02AnalogValue} | " +
-                              $"[ADC 3] is currently {pin03AnalogValue}");
-        }
+        // var countdown = 500;
+        //
+        // while (countdown-- > 0)
+        // {
+        //     var pin00AnalogValue = readAdcSingleChannel(0, ads1256);
+        //     var pin01AnalogValue = readAdcSingleChannel(1, ads1256);
+        //     var pin02AnalogValue = readAdcSingleChannel(2, ads1256);
+        //     var pin03AnalogValue = readAdcSingleChannel(3, ads1256);
+        //     
+        //     Console.WriteLine($"DeviceID: {adcDeviceId} | [ADC 0] is currently {pin00AnalogValue} | " + 
+        //                       $"[ADC 1] is currently {pin01AnalogValue} | " + 
+        //                       $"[ADC 2] is currently {pin02AnalogValue} | " +
+        //                       $"[ADC 3] is currently {pin03AnalogValue}");
+        // }
         
         Console.WriteLine($"Finished looping Waveshare AD/DA HAT read");
     }
