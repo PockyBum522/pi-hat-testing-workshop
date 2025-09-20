@@ -11,7 +11,8 @@ public class PiHardwareHandler
     private const int _resetPin = 18;            // 18 by other numbering
     
     private GpioController? _gpio;
-    
+    private SpiDevice _ads1256;
+
     public void SetPiGpioPin(int pinToWork, bool newPinState)
     {
         _gpio ??= new GpioController();
@@ -148,13 +149,13 @@ public class PiHardwareHandler
         };
         
         // Create SPI device
-        var ads1256 = SpiDevice.Create(settings);
+        _ads1256 = SpiDevice.Create(settings);
 
         //     self.ADS1256_reset()
         resetAds1256();
 
         //     id = self.ADS1256_ReadChipID()
-        var waveshareAdcDeviceId = getAds1256DeviceId(ads1256);
+        var waveshareAdcDeviceId = getAds1256DeviceId(_ads1256);
 
         Console.WriteLine($"ADS1256 Device ID from board is: {waveshareAdcDeviceId}");
 
@@ -222,7 +223,7 @@ public class PiHardwareHandler
         // return (int)deviceId;
     }
 
-    private int readDataAds1256(SpiDevice ads1256, int reg)
+    private int readDataAds1256(int reg)
     {
         if (_gpio is null) throw new NullReferenceException("_gpio is null");
         
@@ -235,11 +236,11 @@ public class PiHardwareHandler
         //     config.spi_writebyte([CMD['CMD_RREG'] | reg, 0x00])
         
         Span<byte> writeBuffer = [0x10, 0x00];      // RREG command, STATUS register, 1 byte to read
-        ads1256.Write(writeBuffer);
+        _ads1256.Write(writeBuffer);
         
         //     data = config.spi_readbytes(1)
         Span<byte> readBuffer = stackalloc byte[1];
-        ads1256.Read(readBuffer);
+        _ads1256.Read(readBuffer);
         
         //     config.digital_write(self.cs_pin, GPIO.HIGH)#cs 1
         _gpio.Write(_chipSelectPin, PinValue.High);
@@ -273,10 +274,32 @@ public class PiHardwareHandler
         //     print ("Time Out ...\r\n")
     }
 
-    private int readAdcSingleChannel(byte channel, SpiDevice ads1256)
+    private int readAdcSingleChannel(byte channel)
     {
-        // _gpio ??= new GpioController();
-        //
+        _gpio ??= new GpioController();
+
+        // self.ADS1256_SetChannal(Channel)
+        setChannelAds1256(channel);
+
+        var cmdSync = (byte)0xFC;
+        var cmdWakeup = (byte)0x00;
+        
+        // self.ADS1256_WriteCmd(CMD['CMD_SYNC'])
+        writeCommandAds1256(cmdSync);
+
+        // # config.delay_ms(10)
+        
+        // self.ADS1256_WriteCmd(CMD['CMD_WAKEUP'])
+        writeCommandAds1256(cmdWakeup);
+        
+        // # config.delay_ms(200)
+
+        // Value = self.ADS1256_Read_ADC_Data()
+        var channelValue = readAdcDataAds1256();
+        
+        Console.WriteLine($"Adc Channel Value: {channelValue}");
+        
+        
         // _gpio.OpenPin(_dataReadyPin, PinMode.Output);
         //
         // // 1. Send the RDATAC command to exit continuous mode (if active)
@@ -313,5 +336,89 @@ public class PiHardwareHandler
         // return result;
         
         throw new NotImplementedException();
+    }
+
+    private double readAdcDataAds1256()
+    {
+        if (_gpio is null) throw new NullReferenceException("_gpio is null");
+        
+        // def ADS1256_Read_ADC_Data(self):
+        //     self.ADS1256_WaitDRDY()
+        waitForDataReadyAds1256();
+        
+        //     config.digital_write(self.cs_pin, GPIO.LOW)#cs  0
+        _gpio.Write(_chipSelectPin, PinValue.Low);
+
+        var rData = (byte)0x01;
+        
+        //     config.spi_writebyte([CMD['CMD_RDATA']])
+        _ads1256.WriteByte(rData);
+        
+        // # config.delay_ms(10)
+        
+        Span<byte> readBuffer = stackalloc byte[3];
+        _ads1256.Read(readBuffer);
+
+        _gpio.Write(_chipSelectPin, PinValue.High);
+
+        var finalValue = (readBuffer[0] << 16) & 0xff0000;
+        finalValue |= (readBuffer[1] << 8) & 0xff00;
+        finalValue |= readBuffer[2] & 0xFF;
+
+        return finalValue;
+
+        //     buf = config.spi_readbytes(3)
+        //     config.digital_write(self.cs_pin, GPIO.HIGH)#cs 1
+        //     read = (buf[0]<<16) & 0xff0000
+        //     read |= (buf[1]<<8) & 0xff00
+        //     read |= (buf[2]) & 0xff
+        //     
+        //     if (read & 0x800000):
+        //         read &= 0xF000000
+        //             
+        //     return read
+    }
+
+    private void writeCommandAds1256(byte reg)
+    {
+        if (_gpio is null) throw new NullReferenceException("_gpio is null");
+        
+        // config.digital_write(self.cs_pin, GPIO.LOW)#cs  0
+        _gpio.Write(_chipSelectPin, PinValue.Low);
+        
+        _ads1256.WriteByte(reg);
+        
+        // config.digital_write(self.cs_pin, GPIO.HIGH)#cs 1
+        _gpio.Write(_chipSelectPin, PinValue.High);
+    }
+
+    private void setChannelAds1256(int channel)
+    {
+        if (channel > 7)
+            throw new ArgumentOutOfRangeException(nameof(channel), "Channel out of range");
+
+        var regMux = 1;
+        
+        // self.ADS1256_WriteReg(REG_E['REG_MUX'], (Channal<<4) | (1<<3))
+        writeRegAds1256((byte)regMux, channel);
+    }
+
+    private void writeRegAds1256(byte reg, int data)
+    {        
+        // This whole thing may need to be rewritten  
+        
+        if (_gpio is null) throw new NullReferenceException("_gpio is null");
+        
+        // def ADS1256_WriteReg(self, reg, data):
+        //     config.digital_write(self.cs_pin, GPIO.LOW)#cs  0
+        _gpio.Write(_chipSelectPin, PinValue.Low);
+        
+        //     config.spi_writebyte([CMD['CMD_WREG'] | reg, 0x00, data])
+        var muxValue = (byte)((data << 4) | 0x08);
+        var wReg = (byte)0x50;
+        _ads1256.Write(new byte[] { (byte)(wReg | reg), 0x00, muxValue });
+        
+        //     config.digital_write(self.cs_pin, GPIO.HIGH)#cs 1
+        _gpio.Write(_chipSelectPin, PinValue.Low);
     }
 }
